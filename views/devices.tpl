@@ -9,11 +9,10 @@
 </head>
 <body>
 <h1>Glisan Devices</h1>
-<table>
+<table style="table-layout: auto;">
     <thead>
         <tr>
             <th>Name</th>
-            <th>Comment</th>
             <th>Address</th>
             <th>MAC</th>
             <th>Dynamic</th>
@@ -24,8 +23,11 @@
     <tbody>
         % for device in devices:
         <tr>
-            <th>{{device.get("host-name", "❌")}}</th>
-            <th>{{device.get("comment", "❌")}}</th>
+            % if "comment" in device:
+            <th>{{device["comment"]}}</th>
+            % else:
+            <th>{{device.get("host-name",  "❌")}}</th>
+            % end
             <th>{{device.get("address", "❌")}}</th>
             <th>{{device.get("active-mac-address", "❌")}}</th>
             % if device["dynamic"] == "true":
