@@ -10,4 +10,4 @@ def index():
     return template("devices", devices=api.get_resource('/ip/dhcp-server/lease').get())
 
 
-run(host='localhost', port=8080)
+run(host='0.0.0.0', port=8080)
