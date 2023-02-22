@@ -7,7 +7,7 @@ api = connection.get_api()
 
 @route("/")
 def index():
-    return template("devices", devices=api.get_resource('/ip/dhcp-server/lease').get())
+    return template("devices", devices=sorted(api.get_resource('/ip/dhcp-server/lease').get(), key=lambda d: d["address"]))
 
 
 run(host='0.0.0.0', port=8080)
