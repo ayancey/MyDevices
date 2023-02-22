@@ -16,6 +16,7 @@
             <th>Address</th>
             <th>MAC</th>
             <th>Dynamic</th>
+            <th>Connected</th>
             <th>Last Seen</th>
             <th>Go</th>
         </tr>
@@ -31,6 +32,11 @@
             <th>{{device.get("address", "❌")}}</th>
             <th>{{device.get("active-mac-address", "❌")}}</th>
             % if device["dynamic"] == "true":
+            <th>✔️</th>
+            % else:
+            <th>❌</th>
+            % end
+            % if device["status"] == "bound":
             <th>✔️</th>
             % else:
             <th>❌</th>
