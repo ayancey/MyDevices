@@ -30,7 +30,7 @@
             <th>{{device.get("host-name",  "❌")}}</th>
             % end
             <th>{{device.get("address", "❌")}}</th>
-            <th>{{device.get("active-mac-address", "❌")}}</th>
+            <th>{{device.get("mac-address", "❌")}}</th>
             % if device["dynamic"] == "true":
             <th>❌</th>
             % else:
