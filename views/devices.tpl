@@ -34,7 +34,7 @@
             % if device["dynamic"] == "true":
             <th>❌</th>
             % else:
-            <th>✔</th>
+            <th>✔️</th>
             % end
             % if device["status"] == "bound":
             <th>✔️</th>
