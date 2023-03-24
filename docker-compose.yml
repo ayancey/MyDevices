@@ -4,3 +4,4 @@ services:
     build: .
     ports:
       - "127.0.0.1:42123:8080"
+    restart: unless-stopped
