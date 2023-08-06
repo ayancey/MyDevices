@@ -3,6 +3,7 @@ from bottle import route, run, template
 import paho.mqtt.client as mqtt
 import threading
 import json
+import math
 
 connection = routeros_api.RouterOsApiPool("10.45.1.1", username="admin", password="***REMOVED***", plaintext_login=True)
 api = connection.get_api()
@@ -23,12 +24,12 @@ def on_message(_, _2, msg):
     if msg.topic == "zigbee2mqtt/***REMOVED***":
         print("server room updated")
         data = json.loads(msg.payload.decode())
-        server_room_temp = (data["temperature"] * 9/5) + 32
+        server_room_temp = math.floor((data["temperature"] * 9/5) + 32)
         server_room_hum = data["humidity"]
     elif msg.topic == "zigbee2mqtt/***REMOVED***":
         print("studio updated")
         data = json.loads(msg.payload.decode())
-        studio_temp = (data["temperature"] * 9/5) + 32
+        studio_temp = math.floor((data["temperature"] * 9/5) + 32)
         studio_hum = data["humidity"]
 
 
