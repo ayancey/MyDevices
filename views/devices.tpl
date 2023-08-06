@@ -47,5 +47,11 @@
         % end
     </tbody>
 </table>
+
+<p>Server Closet Temp: {{ iot['server_room_temp'] }}°F</p>
+<p>Server Closet Humidity: {{ iot['server_room_hum'] }}%</p>
+<p>Studio Temp: {{ iot['studio_temp'] }}°F</p>
+<p>Studio Humidity: {{ iot['studio_hum'] }}%</p>
+
 </body>
 </html>
