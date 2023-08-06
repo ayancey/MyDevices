@@ -21,10 +21,12 @@ def on_message(_, _2, msg):
     global studio_hum
 
     if msg.topic == "zigbee2mqtt/***REMOVED***":
+        print("server room updated")
         data = json.loads(msg.payload.decode())
         server_room_temp = (data["temperature"] * 9/5) + 32
         server_room_hum = data["humidity"]
     elif msg.topic == "zigbee2mqtt/***REMOVED***":
+        print("studio updated")
         data = json.loads(msg.payload.decode())
         studio_temp = (data["temperature"] * 9/5) + 32
         studio_hum = data["humidity"]
@@ -40,7 +42,7 @@ def index():
     })
 
 
-client = mqtt.Client("mydevices") #create new instance
+client = mqtt.Client("mydevices", protocol=mqtt.MQTTv5) #create new instance
 client.connect("***REMOVED***") #connect to broker
 client.subscribe("zigbee2mqtt/***REMOVED***")
 client.subscribe("zigbee2mqtt/***REMOVED***")
