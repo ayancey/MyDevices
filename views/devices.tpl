@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
 </head>
 <body>
-<h1>Glisan Devices</h1>
+<h1>Devices</h1>
 <table style="table-layout: auto;">
     <thead>
         <tr>
@@ -48,10 +48,59 @@
     </tbody>
 </table>
 
-<p>Server Closet Temp: {{ iot['server_room_temp'] }}°F</p>
-<p>Server Closet Humidity: {{ iot['server_room_hum'] }}%</p>
-<p>Studio Temp: {{ iot['studio_temp'] }}°F</p>
-<p>Studio Humidity: {{ iot['studio_hum'] }}%</p>
+<h1>Services</h1>
 
+<table style="table-layout: auto;">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Internal</th>
+            <th>External</th>
+        </tr>
+    </thead>
+    <tbody>
+        % for service in services:
+        <tr>
+            <th>{{service.get("name", "❌")}}</th>
+            <th>{{service.get("type", "❌")}}</th>
+            % if service['internal_url']:
+            <th><a href="{{service['internal_url']}}">Internal</a></th>
+            % else:
+            <th>❌</th>
+            % end
+            % if service['external_url']:
+            <th><a href="{{service['external_url']}}">External</a></th>
+            % else:
+            <th>❌</th>
+            % end
+        </tr>
+        % end
+    </tbody>
+</table>
+
+<h1>Climate</h1>
+
+<table style="table-layout: auto;">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Temperature</th>
+            <th>Humidity</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>Server Closet</th>
+            <th>{{ iot['server_room_temp'] }}°F</th>
+            <th>{{ iot['server_room_hum'] }}%</th>
+        </tr>
+        <tr>
+            <th>Studio Appt</th>
+            <th>{{ iot['studio_temp'] }}°F</th>
+            <th>{{ iot['studio_hum'] }}%</th>
+        </tr>
+    </tbody>
+</table>
 </body>
 </html>

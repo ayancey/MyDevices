@@ -4,6 +4,8 @@ import paho.mqtt.client as mqtt
 import threading
 import json
 import math
+import requests
+
 
 connection = routeros_api.RouterOsApiPool("10.45.1.1", username="admin", password="***REMOVED***", plaintext_login=True)
 api = connection.get_api()
@@ -33,6 +35,63 @@ def on_message(_, _2, msg):
         studio_hum = data["humidity"]
 
 
+def get_all_dns():
+    mikrotik_dns = {}
+
+    for rec in api.get_resource('/ip/dns/static').get():
+        mikrotik_dns[rec["name"]] = rec["address"]
+
+    s = requests.session()
+    s.headers.update({
+        "Authorization": "Bearer ***REMOVED***"
+    })
+    r = s.get("https://api.cloudflare.com/client/v4/zones/***REMOVED***/dns_records")
+
+    services = []
+
+    for record in r.json()["result"]:
+        internal_url = None
+        external_url = None
+
+        if record["content"].startswith("10.45."):
+            rec_type = "Internal"
+            internal_url = "http://" + record["name"]
+        elif (record["type"] == "CNAME" and record["content"] == "***REMOVED***") or record["content"] == "***REMOVED***":
+            rec_type = "External"
+            if record["name"] in mikrotik_dns:
+                internal_url = "https://" + record["name"]
+                rec_type = "Internal/External"
+            else:
+                internal_url = "https://" + record["content"]
+            external_url = "https://" + record["name"]
+        elif "cfargotunnel" in record["content"]:
+            rec_type = "External (ZTNA)"
+            if record["name"] in mikrotik_dns:
+                internal_url = "https://" + record["content"]
+                rec_type = "Internal/External (ZTNA)"
+            external_url = "https://" + record["name"]
+        else:
+            continue
+
+        services.append({
+            "name": record["name"],
+            "type": rec_type,
+            "internal_url": internal_url,
+            "external_url": external_url
+        })
+
+    for int_record in mikrotik_dns:
+        if int_record not in list(map(lambda s: s["name"], services)):
+            services.append({
+                "name": int_record,
+                "type": "Internal",
+                "internal_url": "http://" + int_record,
+                "external_url": None
+            })
+
+    return services
+
+
 @route("/")
 def index():
     return template("devices", devices=sorted(api.get_resource('/ip/dhcp-server/lease').get(), key=lambda d: d["address"]), iot={
@@ -40,7 +99,7 @@ def index():
         "server_room_hum": server_room_hum,
         "studio_temp": studio_temp,
         "studio_hum": studio_hum
-    })
+    }, services=sorted(get_all_dns(), key=lambda s: s["name"]))
 
 
 client = mqtt.Client("mydevices", protocol=mqtt.MQTTv5) #create new instance
