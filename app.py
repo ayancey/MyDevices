@@ -102,7 +102,7 @@ def index():
     }, services=sorted(get_all_dns(), key=lambda s: s["name"]))
 
 
-client = mqtt.Client("mydevices", protocol=mqtt.MQTTv5) #create new instance
+client = mqtt.Client("mydevices") #create new instance
 client.connect("***REMOVED***") #connect to broker
 client.subscribe("zigbee2mqtt/***REMOVED***")
 client.subscribe("zigbee2mqtt/***REMOVED***")
